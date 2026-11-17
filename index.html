@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Free books for every field of knowledge, shelved by library class, with links to open and public-domain sources.">
+<title>World of Knowledge Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout concept: a reading room. Ten book spines act as the index, one per main library class (000 to 900); each opens a shelf of free books. */
+:root {
+  --paper: #F2F5F7;
+  --surface: #FFFFFF;
+  --ink: #0F2230;
+  --muted: #4E626D;
+  --line: #CFD9DF;
+  --accent: #0B6B78;
+  --accent-soft: #DCEEF0;
+  --brass: #8A5E10;
+  --spine-l: 36%;
+  --spine-text: #FFFFFF;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0C171E;
+    --surface: #122029;
+    --ink: #E7EFF3;
+    --muted: #9CB0BA;
+    --line: #273A45;
+    --accent: #52C6D3;
+    --accent-soft: #14323A;
+    --brass: #E2B65C;
+    --spine-l: 30%;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0C171E;
+  --surface: #122029;
+  --ink: #E7EFF3;
+  --muted: #9CB0BA;
+  --line: #273A45;
+  --accent: #52C6D3;
+  --accent-soft: #14323A;
+  --brass: #E2B65C;
+  --spine-l: 30%;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 16px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 17px/1.55 var(--font-body);
+  padding-block: 0;
+}
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+/* Hero */
+.hero { padding-block: 44px 0; }
+.eyebrow {
+  font: 500 13px/1 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--brass);
+  margin: 0 0 18px;
+}
+h1 {
+  font: 800 clamp(2.4rem, 7.2vw, 4.9rem)/1.02 var(--font-display);
+  letter-spacing: -.02em;
+  margin: 0;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+h1 span { color: var(--accent); }
+.lede { max-width: 62ch; font-size: 1.15rem; color: var(--muted); margin: 22px 0 0; }
+.finder { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+.finder label { font: 500 13px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); width: 100%; }
+.finder input {
+  flex: 1 1 280px;
+  max-width: 460px;
+  min-width: 0;
+  font: 400 1.05rem var(--font-body);
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+.finder input:focus-visible { border-color: var(--accent); outline-offset: 0; }
+.count { font: 500 14px/1.3 var(--font-mono); color: var(--muted); }
+
+/* Spines */
+.spines {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 44px;
+  padding-inline: 8px;
+  border-bottom: 6px solid var(--ink);
+}
+.spine {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 14px;
+  text-decoration: none;
+  color: var(--spine-text);
+  background: hsl(var(--h) 42% var(--spine-l));
+  border-radius: 4px 4px 0 0;
+  transition: transform .18s ease;
+}
+.spine:hover, .spine:focus-visible { transform: translateY(-8px); }
+.spine .n { font: 500 12px/1 var(--font-mono); letter-spacing: .02em; }
+.spine .nm {
+  writing-mode: vertical-rl;
+  font: 600 clamp(12px, 1.5vw, 15px)/1.1 var(--font-display);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) { .spine { transition: none; } }
+
+/* Section scaffolding */
+section { padding-block: 64px 0; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; margin-bottom: 8px; }
+h2 { font: 700 clamp(1.6rem, 3.6vw, 2.3rem)/1.1 var(--font-display); letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+.sec-note { color: var(--muted); margin: 0; max-width: 60ch; }
+
+/* Book rows */
+.list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); column-gap: 28px; margin: 0; padding: 0; list-style: none; }
+.book {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "t go" "a go";
+  gap: 2px 14px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.book:hover { background: var(--accent-soft); }
+.bt { grid-area: t; font: 600 1.05rem/1.3 var(--font-display); overflow-wrap: anywhere; }
+.ba { grid-area: a; color: var(--muted); font-size: .95rem; overflow-wrap: anywhere; }
+.go { grid-area: go; align-self: center; color: var(--accent); font-size: 1.2rem; }
+
+/* Shelves */
+.shelf { border-top: 4px solid hsl(var(--h) 42% var(--spine-l)); margin-top: 64px; padding-block: 22px 0; }
+.shelf-grid { display: grid; grid-template-columns: 1fr; gap: 14px 40px; }
+@media (min-width: 900px) { .shelf-grid { grid-template-columns: 280px minmax(0, 1fr); } }
+.dewey { font: 500 14px/1 var(--font-mono); color: var(--brass); letter-spacing: .08em; margin: 0 0 10px; }
+.shelf h3 { font: 700 1.55rem/1.15 var(--font-display); margin: 0 0 10px; text-wrap: balance; }
+.shelf p.desc { margin: 0; color: var(--muted); }
+
+.empty { margin-top: 48px; padding: 24px; border: 2px dashed var(--line); border-radius: 6px; color: var(--muted); }
+
+footer { margin-top: 88px; padding-block: 32px 56px; border-top: 6px solid var(--ink); }
+footer p { max-width: 70ch; color: var(--muted); margin: 0 0 10px; font-size: .95rem; }
+footer strong { color: var(--ink); font-family: var(--font-display); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Free reading room · Ten fields of knowledge</p>
+    <h1>World of Knowledge <span>Intelligence</span></h1>
+    <p class="lede">Free books for every field, shelved the way libraries shelve them. Each link opens the full text at no cost, from a library, a university or a publisher that has made the book open to everyone.</p>
+    <div class="finder">
+      <label for="q">Search the shelves</label>
+      <input id="q" type="search" placeholder="Try: statistics, Plato, anatomy, Sanskrit" autocomplete="off">
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+    <nav class="spines" id="spines" aria-label="Ten fields of knowledge"></nav>
+  </header>
+
+  <main>
+    <section id="libraries" aria-labelledby="lib-h">
+      <div class="sec-head">
+        <h2 id="lib-h">Start with a library</h2>
+        <p class="sec-note">Large collections that cover every subject. Good places to look when you want a book that is not on the shelves below.</p>
+      </div>
+      <div class="list" id="lib-list" style="display:block"></div>
+    </section>
+
+    <div id="shelves"></div>
+    <p class="empty" id="empty" hidden>No book matches that search. Try a broader word such as "science", "history" or "language".</p>
+  </main>
+
+  <footer>
+    <p><strong>About these links.</strong> Every book listed is in the public domain, openly licensed, or released free by its authors or publisher. The links go to each source's own website, and availability and terms are set by those sites.</p>
+    <p>Shelf numbers follow the ten main classes that libraries use to organise books, from 000 to 900.</p>
+  </footer>
+</div>
+
+<script>
+var LIBS = [
+  ["Internet Archive", "Millions of books, with public-domain titles free to read", "https://archive.org"],
+  ["Open Library", "A catalogue of every book, with free editions to read or borrow", "https://openlibrary.org"],
+  ["Project Gutenberg", "Over 70,000 public-domain ebooks", "https://www.gutenberg.org"],
+  ["HathiTrust Digital Library", "Scanned library books from major universities", "https://www.hathitrust.org"],
+  ["Directory of Open Access Books", "Peer-reviewed academic books, free to read", "https://directory.doabooks.org"],
+  ["OAPEN Library", "Open access academic books and chapters", "https://www.oapen.org"],
+  ["Open Textbook Library", "Free textbooks reviewed by faculty", "https://open.umn.edu/opentextbooks"],
+  ["OpenStax", "Free college textbooks from Rice University", "https://openstax.org"],
+  ["LibreTexts", "Open textbooks in science, engineering and the humanities", "https://libretexts.org"],
+  ["National Digital Library of India", "Books and learning material from India's institutions", "https://ndl.iitkgp.ac.in"]
+];
+
+var SHELVES = [
+  { id: "000", h: 205, short: "Computing & AI", name: "Computing, Information & AI",
+    desc: "Machine learning, programming and the foundations of computing.",
+    books: [
+      ["Dive into Deep Learning", "Zhang, Lipton, Li, Smola", "https://d2l.ai"],
+      ["Mathematics for Machine Learning", "Deisenroth, Faisal, Ong", "https://mml-book.com"],
+      ["An Introduction to Statistical Learning", "James, Witten, Hastie, Tibshirani", "https://www.statlearning.com"],
+      ["Think Python", "Allen Downey", "https://greenteapress.com/wp/think-python-2e/"],
+      ["Eloquent JavaScript", "Marijn Haverbeke", "https://eloquentjavascript.net"],
+      ["Pro Git", "Scott Chacon, Ben Straub", "https://git-scm.com/book"],
+      ["Open Data Structures", "Pat Morin", "https://opendatastructures.org"]
+    ] },
+  { id: "100", h: 172, short: "Philosophy & Mind", name: "Philosophy & Psychology",
+    desc: "How people think, reason and understand themselves, from the Stoics to modern psychology.",
+    books: [
+      ["Stanford Encyclopedia of Philosophy", "Stanford University", "https://plato.stanford.edu"],
+      ["Internet Encyclopedia of Philosophy", "Peer-reviewed reference", "https://iep.utm.edu"],
+      ["forall x: Calgary", "P. D. Magnus and others, a logic textbook", "https://forallx.openlogicproject.org"],
+      ["Psychology 2e", "OpenStax", "https://openstax.org/details/books/psychology-2e"],
+      ["Meditations", "Marcus Aurelius", "https://www.gutenberg.org/ebooks/2680"],
+      ["The Republic", "Plato", "https://www.gutenberg.org/ebooks/1497"],
+      ["Critique of Pure Reason", "Immanuel Kant", "https://www.gutenberg.org/ebooks/4280"]
+    ] },
+  { id: "200", h: 28, short: "Religion", name: "Religion & Spiritual Traditions",
+    desc: "Sacred texts and studies of the world's faiths and philosophies.",
+    books: [
+      ["Internet Sacred Text Archive", "Texts from many traditions", "https://www.sacred-texts.com"],
+      ["King James Bible", "Public-domain translation", "https://www.gutenberg.org/ebooks/10"],
+      ["The Varieties of Religious Experience", "William James", "https://www.gutenberg.org/ebooks/621"]
+    ] },
+  { id: "300", h: 350, short: "Society", name: "Social Sciences",
+    desc: "Economics, sociology, law and the study of how societies work.",
+    books: [
+      ["The Economy", "CORE Econ", "https://www.core-econ.org/the-economy/"],
+      ["Principles of Economics 3e", "OpenStax", "https://openstax.org/details/books/principles-economics-3e"],
+      ["Introduction to Sociology 3e", "OpenStax", "https://openstax.org/details/books/introduction-sociology-3e"],
+      ["Open Casebook", "Free law casebooks, Harvard Law School Library Innovation Lab", "https://opencasebook.org"],
+      ["The Wealth of Nations", "Adam Smith", "https://www.gutenberg.org/ebooks/3300"]
+    ] },
+  { id: "400", h: 95, short: "Language", name: "Language",
+    desc: "Linguistics, grammar and texts in many languages.",
+    books: [
+      ["Sanskrit Documents", "Sanskrit texts in several scripts", "https://sanskritdocuments.org"],
+      ["Wikisource", "Free texts in dozens of languages", "https://wikisource.org"],
+      ["Wikibooks", "Open textbooks, including language courses and grammar guides", "https://en.wikibooks.org"],
+      ["Wiktionary", "A free dictionary covering thousands of languages", "https://www.wiktionary.org"]
+    ] },
+  { id: "500", h: 285, short: "Science & Math", name: "Natural Sciences & Mathematics",
+    desc: "Physics, chemistry, biology and mathematics, from first courses to classic texts.",
+    books: [
+      ["Biology 2e", "OpenStax", "https://openstax.org/details/books/biology-2e"],
+      ["Chemistry 2e", "OpenStax", "https://openstax.org/details/books/chemistry-2e"],
+      ["University Physics, Volume 1", "OpenStax", "https://openstax.org/details/books/university-physics-volume-1"],
+      ["Calculus, Volume 1", "OpenStax", "https://openstax.org/details/books/calculus-volume-1"],
+      ["The Feynman Lectures on Physics", "Feynman, Leighton, Sands", "https://www.feynmanlectures.caltech.edu"],
+      ["On the Origin of Species", "Charles Darwin", "https://www.gutenberg.org/ebooks/1228"]
+    ] },
+  { id: "600", h: 15, short: "Tech & Health", name: "Technology, Medicine & Applied Science",
+    desc: "Health, nutrition, engineering, farming and management.",
+    books: [
+      ["NCBI Bookshelf", "US National Library of Medicine", "https://www.ncbi.nlm.nih.gov/books/"],
+      ["Anatomy and Physiology 2e", "OpenStax", "https://openstax.org/details/books/anatomy-and-physiology-2e"],
+      ["Human Nutrition", "University of Hawaii at Manoa", "https://pressbooks.oer.hawaii.edu/humannutrition/"],
+      ["Principles of Management", "OpenStax", "https://openstax.org/details/books/principles-management"],
+      ["MIT OpenCourseWare", "Free lecture notes and readings", "https://ocw.mit.edu"],
+      ["FAO Publications", "Food and Agriculture Organization of the UN", "https://www.fao.org/publications"]
+    ] },
+  { id: "700", h: 230, short: "Arts", name: "Arts & Recreation",
+    desc: "Art history, music theory and museum publications.",
+    books: [
+      ["Smarthistory", "Free art history textbook and videos", "https://smarthistory.org"],
+      ["MetPublications", "The Metropolitan Museum of Art", "https://www.metmuseum.org/art/metpublications"],
+      ["Open Music Theory", "Open textbook for music theory", "https://viva.pressbooks.pub/openmusictheory/"],
+      ["Getty Publications Virtual Library", "Art and conservation books from the Getty", "https://www.getty.edu/publications/virtuallibrary/"]
+    ] },
+  { id: "800", h: 50, short: "Literature", name: "Literature",
+    desc: "Novels, plays and poetry, to read or to listen to.",
+    books: [
+      ["Standard Ebooks", "Carefully formatted public-domain classics", "https://standardebooks.org"],
+      ["LibriVox", "Free audiobooks read by volunteers", "https://librivox.org"],
+      ["Pride and Prejudice", "Jane Austen", "https://www.gutenberg.org/ebooks/1342"],
+      ["The Complete Works of Shakespeare", "William Shakespeare", "https://www.gutenberg.org/ebooks/100"],
+      ["Free Ebooks collection", "Open Culture", "https://www.openculture.com/free_ebooks"]
+    ] },
+  { id: "900", h: 140, short: "History", name: "History & Geography",
+    desc: "World history, primary sources and the records of India and beyond.",
+    books: [
+      ["Internet History Sourcebooks", "Fordham University", "https://sourcebooks.fordham.edu"],
+      ["World History, Volume 1", "OpenStax", "https://openstax.org/details/books/world-history-volume-1"],
+      ["Indian Culture", "Government of India archive of books and documents", "https://indianculture.gov.in"],
+      ["NCERT Textbooks", "School textbooks for classes 1 to 12", "https://ncert.nic.in/textbook.php"],
+      ["Library of Congress Digital Collections", "Maps, books and manuscripts", "https://www.loc.gov/collections/"]
+    ] }
+];
+
+var SPINE_HEIGHTS = [196, 178, 160, 190, 168, 200, 184, 164, 176, 188];
+
+function bookRow(b) {
+  return '<a class="book" href="' + b[2] + '" target="_blank" rel="noopener noreferrer">' +
+    '<span class="bt">' + b[0] + '</span>' +
+    '<span class="ba">' + b[1] + '</span>' +
+    '<span class="go" aria-hidden="true">↗</span></a>';
+}
+
+function build() {
+  var spines = "", shelves = "", libs = "";
+  SHELVES.forEach(function (s, i) {
+    spines += '<a class="spine" href="#shelf-' + s.id + '" style="--h:' + s.h + ';min-height:' + SPINE_HEIGHTS[i] + 'px" aria-label="' + s.id + ' ' + s.name + '">' +
+      '<span class="n">' + s.id + '</span><span class="nm">' + s.short + '</span></a>';
+    shelves += '<section class="shelf" id="shelf-' + s.id + '" style="--h:' + s.h + '" aria-labelledby="h-' + s.id + '"><div class="shelf-grid">' +
+      '<div><p class="dewey">SHELF ' + s.id + '</p><h3 id="h-' + s.id + '">' + s.name + '</h3><p class="desc">' + s.desc + '</p></div>' +
+      '<div class="list">' + s.books.map(bookRow).join("") + '</div></div></section>';
+  });
+  libs = '<div class="list">' + LIBS.map(bookRow).join("") + '</div>';
+  document.getElementById("spines").innerHTML = spines;
+  document.getElementById("shelves").innerHTML = shelves;
+  document.getElementById("lib-list").innerHTML = libs;
+  document.getElementById("lib-list").removeAttribute("style");
+}
+
+function total() {
+  var n = LIBS.length;
+  SHELVES.forEach(function (s) { n += s.books.length; });
+  return n;
+}
+
+function filter(q) {
+  q = q.trim().toLowerCase();
+  var shown = 0;
+  var blocks = document.querySelectorAll("#libraries, .shelf");
+  Array.prototype.forEach.call(blocks, function (block) {
+    var rows = block.querySelectorAll(".book"), any = false;
+    Array.prototype.forEach.call(rows, function (r) {
+      var ok = !q || (r.textContent + " " + block.textContent.slice(0, 0)).toLowerCase().indexOf(q) !== -1;
+      var head = block.querySelector("h2, h3");
+      if (!ok && head && head.textContent.toLowerCase().indexOf(q) !== -1) ok = true;
+      r.hidden = !ok;
+      if (ok) { any = true; shown++; }
+    });
+    block.hidden = !any;
+  });
+  document.getElementById("empty").hidden = shown !== 0;
+  document.getElementById("count").textContent = q
+    ? shown + " of " + total() + " books and libraries match"
+    : total() + " free books and libraries in 10 fields";
+}
+
+build();
+var qEl = document.getElementById("q");
+qEl.addEventListener("input", function () { filter(qEl.value); });
+filter("");
+</script>
+
+</body>
+</html>
